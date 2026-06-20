@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PadelCoach — Test</title>
+  <style>
+    body { background: #0D1B2A; color: #E8F4FD; font-family: system-ui; display:flex; align-items:center; justify-content:center; min-height:100vh; margin:0; }
+    .card { background: #132336; border-radius: 16px; padding: 32px; max-width: 360px; width: 100%; }
+    input { width: 100%; padding: 10px; border-radius: 8px; background: #0D1B2A; border: 1px solid #1E3A52; color: #E8F4FD; font-size: 14px; margin-bottom: 10px; box-sizing: border-box; outline: none; }
+    button { width: 100%; padding: 12px; border-radius: 12px; background: #C8FF00; color: #0D1B2A; border: none; font-weight: 800; font-size: 14px; cursor: pointer; }
+    .error { background: #FF475722; border: 1px solid #FF475744; border-radius: 8px; padding: 10px; margin-bottom: 10px; font-size: 12px; color: #FF4757; display:none; }
+    .debug { background: #1A2F45; border-radius: 8px; padding: 10px; margin-top: 10px; font-size: 11px; color: #6B8FA8; word-break: break-all; display:none; }
+    h2 { margin: 0 0 4px; font-size: 22px; }
+    p { margin: 0 0 24px; color: #6B8FA8; font-size: 13px; }
+    .logo { text-align:center; margin-bottom: 24px; font-size: 40px; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">🎾</div>
+  <h2>PádelCoach</h2>
+  <p>Advantage — Test de conexión</p>
+  <div class="error" id="err"></div>
+  <input type="email" id="email" placeholder="Email" value="jdaniel0993@gmail.com"/>
+  <input type="password" id="pass" placeholder="Contraseña"/>
+  <button onclick="doLogin()">Entrar</button>
+  <div class="debug" id="debug"></div>
+</div>
+<script>
+const URL = "https://ftmoavtwkohyglaeqez.supabase.co";
+const KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ0bW9hdnR3a29oeWdsYWVwcWV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NzUzMjgsImV4cCI6MjA5NzU1MTMyOH0.GXIF2w5MuNtAneOKevi66ecq0eYWTRMkAGKpW5Jpl5o";
+
+async function doLogin() {
+  const email = document.getElementById("email").value;
+  const pass = document.getElementById("pass").value;
+  const btn = document.querySelector("button");
+  const errEl = document.getElementById("err");
+  const dbg = document.getElementById("debug");
+  
+  btn.textContent = "Conectando...";
+  btn.disabled = true;
+  errEl.style.display = "none";
+  dbg.style.display = "none";
+  
+  try {
+    const r = await fetch(URL + "/auth/v1/token?grant_type=password", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": KEY,
+        "Authorization": "Bearer " + KEY
+      },
+      body: JSON.stringify({ email, password: pass })
+    });
+    
+    const data = await r.json();
+    dbg.style.display = "block";
+    dbg.textContent = "Respuesta: " + JSON.stringify(data).slice(0, 500);
+    
+    const token = data.access_token || (data.session && data.session.access_token);
+    if (token) {
+      errEl.style.display = "block";
+      errEl.style.background = "#2ED57322";
+      errEl.style.borderColor = "#2ED57344";
+      errEl.style.color = "#2ED573";
+      errEl.textContent = "✅ Login exitoso! Token recibido. Redirigiendo a la app...";
+      setTimeout(() => {
+        window.location.href = "https://jdaniel0993-gif.github.io/Padelcoach/index.html";
+      }, 2000);
+    } else {
+      errEl.style.display = "block";
+      errEl.textContent = data.error_description || data.message || JSON.stringify(data);
+    }
+  } catch(e) {
+    errEl.style.display = "block";
+    errEl.textContent = "Error de red: " + e.message;
+    dbg.style.display = "block";
+    dbg.textContent = e.toString();
+  }
+  
+  btn.textContent = "Entrar";
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
