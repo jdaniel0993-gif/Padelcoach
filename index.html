@@ -1067,7 +1067,8 @@ setSubPlayerIds(new Set((Array.isArray(subs)?subs:[]).map(s=>s.player_id)));
 
   const addPlayer=async()=>{
     if(!form.name.trim()){showToast("El nombre es obligatorio","error");return;}
-    if(!form.assignedCoachId){showToast("Asigna un coach al alumno","error");return;}
+    const finalCoachId = form.assignedCoachId || (coaches.length ? coaches[0].id : "");
+    if(!finalCoachId){showToast("Asigna un coach al alumno","error");return;}
     setSaving(true);
     const inviteCode=generateCode();
     const pin=String(Math.floor(1000+Math.random()*9000));
