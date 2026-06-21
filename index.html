@@ -1565,7 +1565,7 @@ const buildAIPrompt = (player, sessions, notes, thresholds, currentScores) => {
   skillSummary.sort((a,b) => (b.gap||0) - (a.gap||0));
 
   const formalSessions = sessions.filter(s=>s.is_formal).sort((a,b)=>new Date(a.date)-new Date(b.date));
-  const coachNotes = notes.filter(n=>n.source==="coach").map(n=>n.note || n.text).join("\n- ");
+  const coachNotes = notes.filter(n=>n.source==="coach").slice(0,3).map(n=>n.note || n.text).join("\n- ");
 
   return `Eres un asistente de coaching de pádel para la academia Advantage. Tu tarea es generar recomendaciones de entrenamiento personalizadas basadas en los datos del alumno.
 
@@ -1625,7 +1625,7 @@ const callClaudeAPI = async (prompt) => {
     },
     body: JSON.stringify({
       model: "claude-sonnet-4-6",
-      max_tokens: 1500,
+      max_tokens: 2000,
       messages: [{ role: "user", content: prompt }]
     })
   });
