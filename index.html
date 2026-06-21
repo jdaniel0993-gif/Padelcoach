@@ -1038,8 +1038,13 @@ function PlayersTab({token,coachId,coachRole,thresholds,onSelectPlayer}) {
       sb.get(token,"substitutions",`?assigned_coach_id=eq.${coachId}&status=eq.pending&session_date=lte.${cutoff}&select=player_id,session_date`),
     ]);
     setPlayers(Array.isArray(data)?data:[]);
-    setCoaches(Array.isArray(chs)?chs:[]);
-    setSubPlayerIds(new Set((Array.isArray(subs)?subs:[]).map(s=>s.player_id)));
+    const coachesList = Array.isArray(chs)?chs:[];
+    setCoaches(coachesList);
+    if(coachesList.length && !form.assignedCoachId){
+    setForm(f=>({...f,assignedCoachId:coachesList[0].id}));
+}
+setSubPlayerIds(new Set((Array.isArray(subs)?subs:[]).map(s=>s.player_id)));
+
     setLoading(false);
   },[token,coachId]);
 
