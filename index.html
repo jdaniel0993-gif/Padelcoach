@@ -1639,7 +1639,9 @@ const callClaudeAPI = async (prompt) => {
 };
 
 const getAIRecommendations = async (player, sessions, notes, thresholds, currentScores, token) => {
-  const lastSession = [...sessions].sort((a,b)=>new Date(b.date)-new Date(a.date))[0];
+  const lastSession = [...sessions]
+  .filter(s => s.source !== "player")
+  .sort((a,b) => new Date(b.date)-new Date(a.date))[0];
   const lastSessionId = lastSession?.id;
   const cached = await sb.get(token, "ai_recommendations", `?player_id=eq.${player.id}&order=generated_at.desc&limit=1`);
   if (cached && Array.isArray(cached) && cached.length > 0) {
