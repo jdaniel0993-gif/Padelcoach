@@ -1066,7 +1066,6 @@ setSubPlayerIds(new Set((Array.isArray(subs)?subs:[]).map(s=>s.player_id)));
   const inactiveCount=players.filter(p=>p.inactive).length;
 
   const addPlayer=async()=>{
-  alert(`name:${form.name} | coachId:${form.assignedCoachId} | coaches:${coaches.length}`);
     if(!form.name.trim()){showToast("El nombre es obligatorio","error");return;}
     const finalCoachId = form.assignedCoachId || (coaches.length ? coaches[0].id : "");
     if(!finalCoachId){showToast("Asigna un coach al alumno","error");return;}
@@ -1074,7 +1073,6 @@ setSubPlayerIds(new Set((Array.isArray(subs)?subs:[]).map(s=>s.player_id)));
     const inviteCode=generateCode();
     const pin=String(Math.floor(1000+Math.random()*9000));
     const insertResult = await sb.post(token,"players",{ club_id:CLUB_ID, primary_coach_id:form.assignedCoachId, name:form.name.trim(), phone:form.phone.trim()||null, email:form.email.trim()||null, level:form.fuerza, gender:form.gender, birthdate:form.birthdate||null, notes:form.notes.trim()||null, invite_code:inviteCode, invite_pin:pin, inactive:false });
-    alert("INSERT result: " + JSON.stringify(insertResult));
     setSaving(false);
     setLastCreated({name:form.name.trim(),code:inviteCode,pin});
     setForm({name:"",phone:"",email:"",fuerza:"5ta Fuerza",gender:"Varonil",birthdate:"",notes:"",assignedCoachId:""});
