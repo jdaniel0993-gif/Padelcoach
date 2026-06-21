@@ -1633,13 +1633,6 @@ const callClaudeAPI = async (prompt) => {
   if (!text) throw new Error("Empty response from Edge Function");
   return JSON.parse(text.replace(/```json|```/g, "").trim());
 };
-  const raw = await response.text();
-  console.log("CLAUDE RAW RESPONSE:", raw.slice(0, 500));
-  const data = JSON.parse(raw);
-  const text = data.content?.[0]?.text || "";
-  if (!text) throw new Error("Empty response: " + JSON.stringify(data).slice(0, 200));
-  return JSON.parse(text.replace(/```json|```/g, "").trim());
-};
 
 const getAIRecommendations = async (player, sessions, notes, thresholds, currentScores, token) => {
   const lastSession = [...sessions].sort((a,b)=>new Date(b.date)-new Date(a.date))[0];
